@@ -1,5 +1,6 @@
 import { ChatMessageRoleEnum, PerceptionProcessor, indentNicely, useSoulMemory } from "@opensouls/engine"
 import { INITIAL_CONVERSATION_NOTES } from "./subprocesses/summarizeConversation.js";
+import { INITIAL_PUCKY } from "./lib/initialPucky.js";
 
 // This is the default percpetion processor extracted from the soul engine itself.
 // if you do not specify a perception processor in your soul, then this is what's used.
@@ -15,6 +16,7 @@ const defaultPerceptionProcessor: PerceptionProcessor = async ({ perception, wor
   const conversationModel = useSoulMemory("conversationSummary", INITIAL_CONVERSATION_NOTES)
   const userModel = useSoulMemory("userModel", "Unkown User")
   const liveMemory = useSoulMemory("liveMemory", "No memories yet.")
+  const currentPucky = useSoulMemory("currentPucky", INITIAL_PUCKY)
 
   const name = perception.name //=== "Interlocutor" ? "Manager" : perception.name
 
@@ -29,6 +31,8 @@ const defaultPerceptionProcessor: PerceptionProcessor = async ({ perception, wor
       ...existingSystem,
       content: indentNicely`
         ${existingSystem.content}
+
+        ${currentPucky.current}
 
         ## Emotions
         ${emotionalWords.current}

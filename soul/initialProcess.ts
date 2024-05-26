@@ -1,18 +1,19 @@
 
 import { MentalProcess, useActions } from "@opensouls/engine";
 import externalDialog from "./cognitiveSteps/externalDialog.js";
+import { BIG_MODEL, FAST_MODEL } from "./lib/models.js";
 
-const gainsTrustWithTheUser: MentalProcess = async ({ workingMemory }) => {
+const initialProcess: MentalProcess = async ({ workingMemory }) => {
   const { speak  } = useActions()
 
   const [withDialog, stream] = await externalDialog(
     workingMemory,
-    "Talk to the user trying to gain trust and learn about their inner world.",
-    { stream: true, model: "quality" }
+    "Understand and shape the interlocutor.",
+    { stream: true, model: FAST_MODEL }
   );
   speak(stream);
 
   return withDialog;
 }
 
-export default gainsTrustWithTheUser
+export default initialProcess

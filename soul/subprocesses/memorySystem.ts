@@ -90,7 +90,7 @@ const memorySystem: MentalProcess = async ({ workingMemory }) => {
   const [, entities] = await extractEntities(
     workingMemory,
     undefined,
-    { model: BIG_MODEL }
+    { model: FAST_MODEL }
   );
 
   log('memorySystem', entities);
@@ -111,7 +111,7 @@ const memorySystem: MentalProcess = async ({ workingMemory }) => {
     const [, combinedDescription] = await combineEntityDescriptions(
       workingMemory,
       { name: entity.name, descriptions: [existingEntity, entity.description] },
-      { model: BIG_MODEL }
+      { model: FAST_MODEL }
     );
 
     set(entity.key, indentNicely`
@@ -202,7 +202,8 @@ const memorySystem: MentalProcess = async ({ workingMemory }) => {
       ## Rules
       Keep important details, put in Soundly's voice.
       Reply with only the summary, no formatting.
-    `
+    `,
+    { model: FAST_MODEL }
   )
 
   log("memories: ", memories.map((mem) => mem.key).join(", "))
