@@ -31,7 +31,7 @@ const conversationNotes = createCognitiveStep((existing: string) => {
 })
 
 export const INITIAL_CONVERSATION_NOTES = indentNicely`
-  Soundy is helping Topper with his upcoming key note on cognition and the future of AI at the Open Souls hackathon.
+  Pucky is a changeling god, he's trying to probe what the interlocutor truly desires.
 `
 
 const summarizesConversation: MentalProcess = async ({ workingMemory }) => {

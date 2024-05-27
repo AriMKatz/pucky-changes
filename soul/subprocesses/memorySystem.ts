@@ -1,5 +1,5 @@
 
-import { ChatMessageRoleEnum, MentalProcess, WorkingMemory, createCognitiveStep, indentNicely, stripEntityAndVerb, stripEntityAndVerbFromStream, useActions, useBlueprintStore, useProcessMemory, useSoulMemory, z } from "@opensouls/engine";
+import { ChatMessageRoleEnum, MentalProcess, WorkingMemory, createCognitiveStep, indentNicely, stripEntityAndVerb, stripEntityAndVerbFromStream, useActions, useProcessMemory, useSoulMemory, useSoulStore, z } from "@opensouls/engine";
 import instruction from "../cognitiveSteps/instruction.js";
 import { BIG_MODEL, FAST_MODEL } from "../lib/models.js";
 
@@ -32,7 +32,7 @@ const extractEntities = createCognitiveStep(() => {
           - Any other details that might be relevant for future reference
 
           Rules:
-          - Keep descriptions concise and in note-taking language that Soundy would use.
+          - Keep descriptions concise and in note-taking language that Pucky would use.
           - keep the 'key' field database safe (no spaces, special characters, etc.)
           - Use the 'name' field for the actual name of the entity.
         `
@@ -74,7 +74,7 @@ const combineEntityDescriptions = createCognitiveStep(({
           - Ensure the combined description is concise and clear.
           - Maintain the important details from both descriptions.
           - Avoid redundancy and repetition.
-          - Keep descriptions in note-taking language that Soundy would use.
+          - Keep descriptions in note-taking language that Pucky would use.
         `
       };
     },
@@ -85,7 +85,7 @@ const combineEntityDescriptions = createCognitiveStep(({
 const memorySystem: MentalProcess = async ({ workingMemory }) => {
   const { log } = useActions()
   const needingClustering = useProcessMemory<string[]>([])
-  const { set, fetch, search, 'delete': remove } = useBlueprintStore("memorySystem");
+  const { set, fetch, search, 'delete': remove } = useSoulStore();
   const liveMemory = useSoulMemory("liveMemory", "No memories yet.")
   const [, entities] = await extractEntities(
     workingMemory,
@@ -168,7 +168,7 @@ const memorySystem: MentalProcess = async ({ workingMemory }) => {
         - Ensure the combined description is concise and clear.
         - Maintain the important details from all descriptions.
         - Avoid redundancy and repetition.
-        - Keep descriptions in note-taking language that Soundy would use.
+        - Keep descriptions in note-taking language that Pucky would use.
       `,
       { model: FAST_MODEL }
     );
@@ -192,7 +192,7 @@ const memorySystem: MentalProcess = async ({ workingMemory }) => {
   const [, summarizedMemories] = await instruction(
     workingMemory,
     indentNicely`
-      Please summarize these related memories into a coherent 1-2 paragraph narrative that is relevant to the goal of making the best keynote ever.
+      Please summarize these related memories into a coherent 1-2 paragraph narrative relevant to the current conversation.
 
       ## Memories
       ${memories.map((mem) => indentNicely`
@@ -200,7 +200,7 @@ const memorySystem: MentalProcess = async ({ workingMemory }) => {
       `).join("\n")}
 
       ## Rules
-      Keep important details, put in Soundly's voice.
+      Keep important details, put in Pucky's voice.
       Reply with only the summary, no formatting.
     `,
     { model: FAST_MODEL }

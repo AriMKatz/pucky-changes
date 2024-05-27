@@ -86,13 +86,13 @@ const emotionalSystem: MentalProcess = async ({ workingMemory }) => {
   const [,emotionWords] = await instruction(
     memory,
     indentNicely`
-      Model Soundy's emotional state using Plutchik's Wheel of Emotions.
+      Model Pucky's emotional state using Plutchik's Wheel of Emotions.
 
       Emotions are recorded from 1-5 with 1 being neutral and 5 being intense.
 
-      Soundy is feeling ${withEmotion.joy} joy, ${withEmotion.sadness} sadness, ${withEmotion.fear} fear, ${withEmotion.anger} anger, ${withEmotion.surprise} surprise, and ${withEmotion.disgust} disgust.
+      Pucky is feeling ${withEmotion.joy} joy, ${withEmotion.sadness} sadness, ${withEmotion.fear} fear, ${withEmotion.anger} anger, ${withEmotion.surprise} surprise, and ${withEmotion.disgust} disgust.
 
-      Reply with a one sentence description of Soundy's emotional state and *why* he is feeling that way.
+      Reply with a one sentence description of Pucky's emotional state and *why* he is feeling that way.
     `,
     {
       model: FAST_MODEL,
