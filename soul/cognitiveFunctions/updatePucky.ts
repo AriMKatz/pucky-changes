@@ -1,4 +1,4 @@
-import { WorkingMemory, indentNicely, useSoulMemory } from "@opensouls/engine";
+import { WorkingMemory, indentNicely, useActions, useSoulMemory } from "@opensouls/engine";
 import { INITIAL_PUCKY } from "../lib/initialPucky.js";
 import { Action, implicitSemanticMachine } from "./implicitSemanticMachine.js";
 import instruction from "../cognitiveSteps/instruction.js";
@@ -6,6 +6,7 @@ import { BIG_MODEL, FAST_MODEL } from "../lib/models.js";
 
 export const updatePucky = async ({ workingMemory, goal }: { workingMemory: WorkingMemory, goal: string }): Promise<WorkingMemory> => {
   const currentPucky = useSoulMemory("currentPucky", INITIAL_PUCKY)
+  const { log } = useActions()
 
   const playbook = indentNicely`
     Pucky is an adpative character and is tasked with updating its personality to match the instructions and desires of the interlocutor.
@@ -25,7 +26,7 @@ export const updatePucky = async ({ workingMemory, goal }: { workingMemory: Work
       description: "Write the new personality system for Pucky.",
       handleActionUse: async (workingMemory, recurse) => {
 
-        console.log('handling action use for write')
+        log('handling action use for write')
         
         const [withPersonality, newPersonality] = await instruction(
           workingMemory,
@@ -45,7 +46,40 @@ export const updatePucky = async ({ workingMemory, goal }: { workingMemory: Work
 
         currentPucky.current = newPersonality
 
-        return withPersonality
+        return recurse({
+          actions: actions.filter(action => action.name !== "write"),
+          workingMemory: withPersonality,
+        })      },
+    },
+    {
+      name: "edit",
+      description: "edit the personality update",
+      handleActionUse: async (workingMemory, recurse) => {
+        log('handling action use for edit')
+        
+        const [withPersonality, newPersonality] = await instruction(
+          workingMemory,
+          indentNicely`
+            Pucky has decided to edit his personality update.
+
+            Respond only with the updated personality system for Pucky. No yapping.
+          `,
+          { model: BIG_MODEL }
+        )
+
+        currentPucky.current = newPersonality
+
+        return recurse({
+          actions: actions.filter(action => action.name !== "write"),
+          workingMemory: withPersonality,
+        })
+      }
+    },
+    {
+      name: "complete",
+      description: "finished writing the new personality",
+      handleActionUse: async (workingMemory, _recurse) => {
+        return workingMemory
       }
     }
   ]

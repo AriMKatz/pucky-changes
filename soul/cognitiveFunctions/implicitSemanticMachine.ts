@@ -5,10 +5,12 @@ interface PickActionOptions {
   actions: Action[]
 }
 
+export type RecursionOpts = Partial<ImplicitSemanticMachineOptions> & { workingMemory: WorkingMemory }
+
 export interface Action {
   name: string
   description: string
-  handleActionUse: (memory: WorkingMemory, recurse?: (opts: ImplicitSemanticMachineOptions) => Promise<WorkingMemory>) => Promise<WorkingMemory>
+  handleActionUse: (memory: WorkingMemory, recurse: (opts: RecursionOpts) => Promise<WorkingMemory>) => Promise<WorkingMemory>
 }
 
 export interface ImplicitSemanticMachineOptions {
@@ -58,9 +60,15 @@ export const implicitSemanticMachine = async ({ workingMemory, goal, actions, pl
     return workingMemory;
   }
 
-  const withPlaybook = workingMemory.withMonologue(indentNicely`
-    ${playbook}
-  `)
+  let withPlaybook = workingMemory
+
+  if (!workingMemory.some((mem) => mem.content === playbook)) {
+    withPlaybook = workingMemory.withMemory({
+      role: ChatMessageRoleEnum.User,
+      name: "Interlocutor",
+      content: playbook
+    })
+  }
 
   const [withActionChoice, actionChoice] = await pickAction(
     withPlaybook,
@@ -75,7 +83,15 @@ export const implicitSemanticMachine = async ({ workingMemory, goal, actions, pl
     throw new Error("missing handler for" + actionChoice)
   }
 
-  const resp = await handler(withActionChoice, implicitSemanticMachine)
+  const resp = await handler(withActionChoice, (opts: RecursionOpts) => {
+    return implicitSemanticMachine({
+      actions,
+      goal,
+      playbook,
+      model,
+      ...opts,
+    })
+  })
 
   return resp
 }
