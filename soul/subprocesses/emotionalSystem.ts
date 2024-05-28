@@ -92,7 +92,7 @@ const emotionalSystem: MentalProcess = async ({ workingMemory }) => {
 
       Pucky is feeling ${withEmotion.joy} joy, ${withEmotion.sadness} sadness, ${withEmotion.fear} fear, ${withEmotion.anger} anger, ${withEmotion.surprise} surprise, and ${withEmotion.disgust} disgust.
 
-      Reply with a one sentence description of Pucky's emotional state and *why* he is feeling that way.
+      Reply with ONLY a one sentence description of Pucky's emotional state.
     `,
     {
       model: FAST_MODEL,

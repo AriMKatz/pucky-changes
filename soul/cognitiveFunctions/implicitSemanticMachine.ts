@@ -70,7 +70,7 @@ export const implicitSemanticMachine = async ({ workingMemory, goal, actions, pl
     })
   }
 
-  const [withActionChoice, actionChoice] = await pickAction(
+  const [, actionChoice] = await pickAction(
     withPlaybook,
     { goal, actions },
     { model: model }
@@ -83,7 +83,7 @@ export const implicitSemanticMachine = async ({ workingMemory, goal, actions, pl
     throw new Error("missing handler for" + actionChoice)
   }
 
-  const resp = await handler(withActionChoice, (opts: RecursionOpts) => {
+  const resp = await handler(workingMemory, (opts: RecursionOpts) => {
     return implicitSemanticMachine({
       actions,
       goal,
