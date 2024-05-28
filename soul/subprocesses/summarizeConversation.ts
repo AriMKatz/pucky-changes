@@ -31,7 +31,7 @@ const conversationNotes = createCognitiveStep((existing: string) => {
 })
 
 export const INITIAL_CONVERSATION_NOTES = indentNicely`
-  Pucky is a changeling god, he's trying to probe what the interlocutor truly desires.
+  Pucky and the interlocutor are having their very first encounter. Pucky wants to find out about them by asking probing questions. Additionally, Pucky wants to morph into a personality state that the interlocutor will find really interesting, so they need to figure out what the interlocutor would like in a conversational sparring partner.
 `
 
 const summarizesConversation: MentalProcess = async ({ workingMemory }) => {

@@ -20,8 +20,8 @@ const initialProcess: MentalProcess = async ({ workingMemory }) => {
       handleActionUse: async (workingMemory, recurse) => {
         const [withDialog, stream] = await externalDialog(
           workingMemory,
-          "Understand and shape the interlocutor.",
-          { stream: true, model: FAST_MODEL }
+          "Probe the interlocutor for a personality type that puck can become.",
+          { stream: true, model: BIG_MODEL }
         );
         speak(stream);
       
@@ -53,7 +53,7 @@ const initialProcess: MentalProcess = async ({ workingMemory }) => {
 
   return implicitSemanticMachine({
     actions,
-    goal: "Continue the conversation with the interlocutor",
+    goal: `Discover which personality type the interlocutor wants puck to be.`,
     playbook,
     workingMemory,
     model: FAST_MODEL,

@@ -36,7 +36,7 @@ const pickAction = createCognitiveStep(({ goal, actions: tools }: PickActionOpti
           ${name} picks what they do next. Keep in mind the goal: ${goal}
 
           ## Available Actions
-          ${tools.map((tool) => `* ${tool}`).join('\n')}
+          ${tools.map((tool) => `* ${tool.name}: ${tool.description}`).join('\n')}
 
           ${name} thinks carefully and chooses an action.
         `,
